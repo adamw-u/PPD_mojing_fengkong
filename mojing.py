@@ -193,22 +193,8 @@ model.fit(X_train, y_train, nb_epoch=100, batch_size=128,
 y_pre = model.predict_proba(X_valid)
 scores = roc_auc_score(y_valid,y_pre)
 model_predprob = model.predict_proba(X_valid)[:,1]
-print ("\nknnModel Report")
+print ("\nnnModel Report")
 print ("AUC Score (Test): %f" %scores)
-
-gbdt = GradientBoostingClassifier(n_estimators=400, learning_rate=0.03,
-    max_depth=9,).fit(X_Train, y_Train)
-gbdt_predprob = gbdt.predict_proba(X_Valid)[:,1]
-
-print "\ngbdtModel Report"
-print "AUC Score (test): %f" % roc_auc_score(y_Valid, gbdt_predprob)
-
-lr = LogisticRegression()
-lr.fit(X_Train, y_Train)
-lr_predprob = lr.predict_proba(X_Valid)[:,1]
-
-print "\nlrModel Report"
-print "AUC Score (test): %f" % roc_auc_score(y_Valid, lr_predprob)
 
 xgb1 = XGBClassifier(
  learning_rate =0.03,
@@ -225,7 +211,6 @@ dtrain_predictions = xgb1.predict(X_Valid)
 dtrain_predprob = xgb1.predict_proba(X_Valid)[:,1]
     
 print "\nxgbModel Report"
-#print "Accuracy : %.4g" % accuracy_score(y_Valid, dtrain_predictions)
 print "AUC Score: %f" % roc_auc_score(y_Valid, dtrain_predprob)
 
 AUC = []
@@ -239,16 +224,12 @@ print i,"AUC Score: %f" % max(AUC)
 
 test = load_data()[4].values[0:10000]
 
-yprelr = lr.predict_proba(X_Test).head(10000)[:,1]
-ypregbdt = gbdt.predict_proba(X_Test).head(10000)[:,1]
 y_pre1 = model.predict_proba(X_test)[0:10000][:,1]
 y_pre2 = xgb1.predict_proba(X_Test).head(10000)[:,1]
 y_pre = round(float(i)/100,2)*y_pre2 + (1-round(float(i)/100,2))*y_pre1
 
-print "\ntest Report"
-print "lr AUC Score: %f" % roc_auc_score(test,yprelr)
-print "gbdt AUC Score: %f" % roc_auc_score(test,ypregbdt)
-print "knn AUC Score: %f" % roc_auc_score(test,y_pre1)
+
+print "nn AUC Score: %f" % roc_auc_score(test,y_pre1)
 print "xgb AUC Score: %f" % roc_auc_score(test,y_pre2)
 print "ensemble AUC Score: %f" % roc_auc_score(test,y_pre)
 #print roc_auc_score(y_test,y_pre)
